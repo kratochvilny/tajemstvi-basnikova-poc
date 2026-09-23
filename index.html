@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kratochvilná Poezie - Prototyp</title>
     
-    <!-- ZDE JE STYLE VLOŽENÝ NATVRDO, ABY TO VERCEL NEMOHL POKAZIT -->
     <style>
+        /* 1. GLOBÁLNÍ ZÁKLADY (Čistá tma pro uhelnou kresbu) */
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -18,11 +18,14 @@
             color: #f5f5f5; 
             overflow-x: hidden; 
         }
+
+        /* 2. SCROLLYTELLING STRUKTURA (Fixní pozadí a prostor na skrolování) */
         .story-scene {
             position: relative;
             width: 100vw;
-            min-height: 250vh;
+            min-height: 250vh; /* Dostatečná výška pro plynulý odjezd textů */
         }
+
         .scene-background {
             position: -webkit-sticky;
             position: sticky;
@@ -31,56 +34,91 @@
             z-index: 1;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
+            background-color: #0b0b0b;
         }
+
+        /* OPRAVA OBRÁZKU: Kresba se zobrazí CELÁ bez ořezání a vycentruje se */
         .scene-background img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            filter: brightness(0.4) contrast(1.1) grayscale(100%);
-            mask-image: radial-gradient(circle, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
-            -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+            width: auto;
+            height: 85vh; /* Obsadí 85 % výšky obrazovky, zbytek splyne se tmou */
+            max-width: 90vw;
+            object-fit: contain; /* Garantuje kompletní zobrazení bez deformace */
+            filter: brightness(0.4) contrast(1.15); /* Jemné ztmavení, aby kresba nerušila čtení */
         }
+
         .scene-foreground {
             position: relative;
             z-index: 2;
             width: 100%;
             display: flex; flex-direction: column; align-items: center;
         }
+
+        /* 3. LITERÁRNÍ BLOKY */
         .poem-block {
             min-height: 100vh;
-            width: 100%; max-width: 600px;
+            width: 100%; max-width: 650px;
             display: flex; flex-direction: column; justify-content: center;
             padding: 40px; text-align: center;
         }
+
         .poem-meta {
-            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: #777; margin-bottom: 10px;
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: #666; margin-bottom: 15px;
         }
-        .poem-title { font-size: 2.2rem; margin-bottom: 1.5rem; font-weight: 300; letter-spacing: 1px; }
-        .poem-verse { font-size: 1.5rem; font-style: italic; line-height: 1.8; margin-bottom: 10px; }
+        .poem-title { font-size: 2.4rem; margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px; color: #fff; }
+        .poem-verse { font-size: 1.6rem; font-style: italic; line-height: 1.8; color: #e5e5e5; }
         
-        .author-commentary { justify-content: flex-start; padding-top: 10vh; }
-        .commentary-box {
-            background: rgba(15, 15, 15, 0.9);
-            border-left: 2px solid #555;
-            padding: 30px; text-align: left; max-width: 550px; border-radius: 4px;
+        /* OPRAVA OKNA S KOMENTÁŘEM: Čistý, kontrastní a prémiový vzhled */
+        .author-commentary { 
+            justify-content: flex-start; 
+            padding-top: 15vh; 
         }
-        .commentary-box h3 { font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 15px; }
-        .commentary-box p { font-family: sans-serif; font-size: 1.05rem; line-height: 1.6; color: #ccc; margin-bottom: 15px; }
-        .commentary-footer { font-size: 0.9rem; font-style: italic; color: #666; margin-top: 20px; border-top: 1px solid #222; padding-top: 10px; }
+        
+        .commentary-box {
+            background: rgba(15, 15, 15, 0.95); /* Téměř neprůhledná černá pro absolutní čitelnost textu */
+            border-left: 3px solid #8c7853; /* Decentní tlumená linka evokující starý papír */
+            padding: 40px; 
+            text-align: left; 
+            max-width: 580px; 
+            border-radius: 4px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9); /* Odsazení boxu do popředí */
+        }
+        
+        .commentary-box h3 { 
+            font-size: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: #8c7853; 
+            margin-bottom: 20px; 
+        }
+        
+        .commentary-box p { 
+            font-family: 'Georgia', serif; 
+            font-size: 1.15rem; 
+            line-height: 1.75; 
+            color: #d8d8d8; /* Čitelný světle šedý text */
+            margin-bottom: 18px; 
+        }
+        
+        .commentary-footer { 
+            font-size: 0.95rem; 
+            font-style: italic; 
+            color: #666; 
+            margin-top: 25px; 
+            border-top: 1px solid #252525; 
+            padding-top: 15px; 
+        }
     </style>
 </head>
 <body>
 
     <main id="main-content">
-        
         <section class="story-scene tajemstvi-scena">
             
             <div class="scene-background">
-                <!-- Klasický obrázek z GitHubu -->
-                <img src="kresba-uhel-tajemstvi.webp" alt="První kresba uhlem - Jan Kratochvilný" class="uhel-kresba" width="1920" height="1080">
+                <img src="kresba-uhel-tajemstvi.webp" alt="První kresba uhlem - Jan Kratochvilný" width="1920" height="1080">
             </div>
             
             <div class="scene-foreground">
-                
                 <article class="poem-block primary-poem">
                     <span class="poem-meta">Září 2026</span>
                     <h2 class="poem-title">TAJEMSTVÍ BÁSNÍKOVO</h2>
@@ -93,14 +131,13 @@
                         <h3>Komentář autora</h3>
                         <p>Moje vůbec první kresba uhlem v životě. Vznikla jednoho zářiového večera, z hlubokého obdivu k anonymnímu obrazu malíře.</p>
                         <p>Z čisté inspirace jsem vdechl té postavě svůj vlastní pohled na sebe jako na Jana Kratochvilného, který místo barvy maluje na zeď svůj vlastní verš.</p>
-                        <p>V té vteřině, s prachem z plechové krabičky na prstech, jsem věděl, že jsem našel svůj style.</p>
+                        <p>V té vteřině, s prachem z plechové krabičky na prstech, jsem věděl, že jsem našel svůj styl.</p>
                         <footer class="commentary-footer">Pozdní večer u mého chřibského psacího stolu, září 2026</footer>
                     </div>
                 </article>
-
             </div>
-        </section>
 
+        </section>
     </main>
 
 </body>
