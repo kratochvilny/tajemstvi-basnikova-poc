@@ -1,38 +1,86 @@
-/* Výchozí stav: verše jsou skryté v pološeru */
+/* 1. GLOBÁLNÍ ZÁKLADY (Zařídí temnou atmosféru) */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+body { 
+    font-family: 'Georgia', serif; 
+    background-color: #0b0b0b; 
+    color: #f5f5f5; 
+    overflow-x: hidden; 
+}
+
+/* 2. SCROLLYTELLING STRUKTURA (Fixní pozadí a dlouhá stránka na skrolování) */
+.story-scene {
+    position: relative;
+    width: 100vw;
+    min-height: 250vh; /* Stránka bude dlouhá, aby šlo krásně skrolovat */
+}
+
+.scene-background {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 1;
+    overflow: hidden;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.scene-background img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.3) contrast(1.1) grayscale(100%); /* Ztmaví kresbu, aby šel číst text */
+    mask-image: radial-gradient(circle, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+}
+
+.scene-foreground {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+}
+
+.poem-block {
+    min-height: 100vh;
+    width: 100%; max-width: 600px;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 40px; text-align: center;
+}
+
+.poem-meta {
+    font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: #777; margin-bottom: 10px;
+}
+.poem-title { font-size: 2.2rem; margin-bottom: 1.5rem; font-weight: 300; letter-spacing: 1px; }
+.poem-verse { font-size: 1.5rem; font-style: italic; line-height: 1.8; }
+
+/* 3. KOMENTÁŘ AUTORA (Elegantní literární blok) */
+.author-commentary { justify-content: flex-start; padding-top: 10vh; }
+.commentary-box {
+    background: rgba(15, 15, 15, 0.85);
+    border-left: 2px solid #555;
+    padding: 30px; text-align: left; max-width: 550px; border-radius: 4px;
+}
+.commentary-box h3 { font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 15px; }
+.commentary-box p { font-family: sans-serif; font-size: 1.05rem; line-height: 1.6; color: #ccc; margin-bottom: 15px; }
+.commentary-footer { font-size: 0.9rem; font-style: italic; color: #666; mountaineer: 20px; border-top: 1px solid #222; padding-top: 10px; }
+
+/* 4. ANIMACE (Váš kód pro vypisování uhlem) */
 .anim-verse {
     opacity: 0;
     transform: translateY(4px);
-    filter: blur(3px); /* Uhlové rozostření před vykreslením */
-    
-    /* Vytvoříme masku, která je na začátku 100% průhledná (neviditelná) */
+    filter: blur(3px);
     -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 0%);
     mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 0%);
-    
-    -webkit-mask-size: 200% 100%;
-    mask-size: 200% 100%;
-    -webkit-mask-position: 100% 0;
-    mask-position: 100% 0;
-    
-    /* Plynulost animace: kombinace posunu, zaostření a odmaskování */
-    transition: 
-        opacity 0.8s ease-out, 
-        transform 0.8s ease-out, 
-        filter 1.2s ease-in-out,
-        mask-position 1.5s cubic-bezier(0.25, 1, 0.5, 1),
-        -webkit-mask-position 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+    -webkit-mask-size: 200% 100%; mask-size: 200% 100%;
+    -webkit-mask-position: 100% 0; mask-position: 100% 0;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out, filter 1.2s ease-in-out, mask-position 1.5s cubic-bezier(0.25, 1, 0.5, 1), -webkit-mask-position 1.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
-/* Tuto třídu přidá JavaScript, jakmile čtenář na scénu dorazí */
 .anim-verse.vypisuje-se {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0); /* Text se dokonale zaostří */
-    
-    /* Posuneme masku, čímž se text plynule odkryje zleva doprava */
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
+    opacity: 1; transform: translateY(0); filter: blur(0);
+    -webkit-mask-position: 0 0; mask-position: 0 0;
 }
-
-/* První řádek začne hned, druhý s mírným zpožděním, aby se psalo postupně */
-.anim-verse:nth-child(2) { transition-delay: 0.1s, 0.1s, 0.1s, 0.1s; }
-.anim-verse:nth-child(3) { transition-delay: 0.3s, 0.3s, 0.3s, 0.8s; } /* Druhý verš počká na dopsání prvního */
+.anim-verse:nth-child(3) { transition-delay: 0.3s; }
+.anim-verse:nth-child(4) { transition-delay: 1.2s; }
