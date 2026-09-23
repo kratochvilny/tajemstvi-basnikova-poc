@@ -1,0 +1,38 @@
+/* Výchozí stav: verše jsou skryté v pološeru */
+.anim-verse {
+    opacity: 0;
+    transform: translateY(4px);
+    filter: blur(3px); /* Uhlové rozostření před vykreslením */
+    
+    /* Vytvoříme masku, která je na začátku 100% průhledná (neviditelná) */
+    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 0%);
+    mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 0%);
+    
+    -webkit-mask-size: 200% 100%;
+    mask-size: 200% 100%;
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+    
+    /* Plynulost animace: kombinace posunu, zaostření a odmaskování */
+    transition: 
+        opacity 0.8s ease-out, 
+        transform 0.8s ease-out, 
+        filter 1.2s ease-in-out,
+        mask-position 1.5s cubic-bezier(0.25, 1, 0.5, 1),
+        -webkit-mask-position 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Tuto třídu přidá JavaScript, jakmile čtenář na scénu dorazí */
+.anim-verse.vypisuje-se {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0); /* Text se dokonale zaostří */
+    
+    /* Posuneme masku, čímž se text plynule odkryje zleva doprava */
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+}
+
+/* První řádek začne hned, druhý s mírným zpožděním, aby se psalo postupně */
+.anim-verse:nth-child(2) { transition-delay: 0.1s, 0.1s, 0.1s, 0.1s; }
+.anim-verse:nth-child(3) { transition-delay: 0.3s, 0.3s, 0.3s, 0.8s; } /* Druhý verš počká na dopsání prvního */
